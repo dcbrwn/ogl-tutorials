@@ -5,7 +5,7 @@ const gl = initGL();
 const triangleData = new Float32Array([
   -1.0, -1.0, 0.0,
   1.0, -1.0, 0.0,
-  0.0,  1.0, 0.0,
+  0.0, 1.0, 0.0,
 ]);
 
 const buffer = gl.createBuffer();

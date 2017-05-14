@@ -34,6 +34,14 @@ function setRenderFunc(func) {
   render();
 }
 
+function fetchText(url) {
+  return fetch(url).then((res) => res.text());
+}
+
+function fetchJson(url) {
+  return fetch(url).then((res) => res.json());
+}
+
 function loadProgram(gl, vertexShaderUrl, fragmentShaderUrl) {
   const program = gl.createProgram();
   let vertexShader;
@@ -41,8 +49,8 @@ function loadProgram(gl, vertexShaderUrl, fragmentShaderUrl) {
 
   return Promise
     .all([
-      fetch(vertexShaderUrl).then((res) => res.text()),
-      fetch(fragmentShaderUrl).then((res) => res.text()),
+      fetchText(vertexShaderUrl),
+      fetchText(fragmentShaderUrl),
     ])
     .then((shaders) => {
       vertexShader = gl.createShader(gl.VERTEX_SHADER);
