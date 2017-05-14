@@ -35,16 +35,16 @@ loadProgram(gl, 'shaders/simple.vsh', 'shaders/simple.fsh')
 
     const modelMatrix = mat4.create();
 
-    const mvpMatrix = mat4.create();
+    const transformMatrix = mat4.create();
 
-    mat4.mul(mvpMatrix, viewMatrix, modelMatrix);
-    mat4.mul(mvpMatrix, projectionMatrix, mvpMatrix);
+    mat4.mul(transformMatrix, viewMatrix, modelMatrix);
+    mat4.mul(transformMatrix, projectionMatrix, transformMatrix);
 
-    const mvpMatrixUniform = gl.getUniformLocation(program, "mvpMatrix");
+    const transformMatrixUniform = gl.getUniformLocation(program, "transformMatrix");
 
     setRenderFunc((dt) => {
       gl.useProgram(program);
-      gl.uniformMatrix4fv(mvpMatrixUniform, false, mvpMatrix);
+      gl.uniformMatrix4fv(transformMatrixUniform, false, transformMatrix);
       gl.enableVertexAttribArray(aPosition);
       gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
       gl.drawArrays(gl.TRIANGLES, 0, 3);

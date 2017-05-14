@@ -1,7 +1,7 @@
 attribute vec4 aPosition;
 
-uniform mat4 mvpMatrix;
+uniform mat4 transformMatrix;
 
 void main() {
-  gl_Position = mvpMatrix * vec4(aPosition.xyz, 1.0);
+  gl_Position = transformMatrix * vec4(aPosition.xyz, 1.0);
 }
