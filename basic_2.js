@@ -14,13 +14,13 @@ gl.bufferData(gl.ARRAY_BUFFER, triangleData.buffer, gl.STATIC_DRAW);
 
 loadProgram(gl, 'shaders/passthrough.vsh', 'shaders/simple.fsh')
   .then((program) => {
+    const aPosition = gl.getAttribLocation(program, "a_position");
+
     setRenderFunc(() => {
       gl.useProgram(program);
-      gl.enableVertexAttribArray(0);
+      gl.enableVertexAttribArray(aPosition);
       gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
-
       gl.drawArrays(gl.TRIANGLES, 0, 3);
-
-      gl.disableVertexAttribArray(0);
+      gl.disableVertexAttribArray(aPosition);
     });
   });
