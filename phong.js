@@ -4,7 +4,7 @@ const gl = initGL();
 
 const camera = new PerspectiveCamera(45, 4/3, 0.1, 100);
 camera.lookAt(
-  vec3.fromValues(3,2,2),
+  vec3.fromValues(1.5,1.5,1.5),
   vec3.fromValues(0,0,0),
   vec3.fromValues(0,1,0)
 );

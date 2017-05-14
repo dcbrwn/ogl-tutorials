@@ -119,6 +119,8 @@ class PerspectiveCamera {
 
 class Mesh {
   constructor(data) {
+    // TODO: move model matrix here
+
     this.indicesBuffer = gl.createBuffer();
     this.vertexBuffer = gl.createBuffer();
     this.normalBuffer = gl.createBuffer();
@@ -170,7 +172,8 @@ class Mesh {
     gl.enableVertexAttribArray(aNormal);
     gl.vertexAttribPointer(aNormal, 3, gl.FLOAT, false, 0, 0);
 
-    gl.drawElements(gl.TRIANGLES, this.facesCount, gl.UNSIGNED_SHORT, 0);
+    // gl.drawElements(gl.TRIANGLES, this.facesCount, gl.UNSIGNED_SHORT, 0);
+    gl.drawArrays(gl.TRIANGLES, 0, this.facesCount);
 
     gl.disableVertexAttribArray(aNormal);
     gl.disableVertexAttribArray(aPosition);
@@ -178,55 +181,93 @@ class Mesh {
 }
 
 function loadObj(modelUrl) {
-  const faceFormat = /(\d+)\/\/(\d+)/;
+  // TODO: Support multiobject .obj
+
+  const faceFormat = /(\d+)\/(?:\d+)?\/(\d+)/;
 
   return fetchText(modelUrl).then((text) => {
+    function directivePriority(directive) {
+      if (directive.indexOf('v ') === 0) {
+        return 0;
+      } else if (directive.indexOf('vn ') === 0) {
+        return 1;
+      } else if (directive.indexOf('f ') === 0) {
+        return 2;
+      }
+
+      return 3;
+    }
     const directives = text.split('\n');
+    const rawVertices = [];
+    const rawNormals = [];
+
     const vertices = [];
-    const normalsRaw = [];
     const normals = [];
     const indices = [];
+
+    function addVertex(x, y, z) {
+      rawVertices.push([x, y, z]);
+    }
+
+    function addNormal(x, y, z) {
+      rawNormals.push([x, y, z]);
+    }
+
+    function addAttributes(vertexIndex, textureIndex, normalIndex) {
+      // TODO: Handle duplicate vertices to enable drawElements
+
+      vertices.push(rawVertices[vertexIndex][0]);
+      vertices.push(rawVertices[vertexIndex][1]);
+      vertices.push(rawVertices[vertexIndex][2]);
+
+      normals.push(rawNormals[normalIndex][0]);
+      normals.push(rawNormals[normalIndex][1]);
+      normals.push(rawNormals[normalIndex][2]);
+
+      indices.push(indices.length);
+    }
 
     for (let i = 0, len = directives.length; i < len; i += 1) {
       const directive = directives[i].split(' ');
 
       switch(directive[0]) {
         case 'v':
-          vertices.push(parseFloat(directive[1]));
-          vertices.push(parseFloat(directive[2]));
-          vertices.push(parseFloat(directive[3]));
+          addVertex(
+            parseFloat(directive[1]),
+            parseFloat(directive[2]),
+            parseFloat(directive[3]));
           break;
         case 'vn':
-          normalsRaw.push(parseFloat(directive[1]));
-          normalsRaw.push(parseFloat(directive[2]));
-          normalsRaw.push(parseFloat(directive[3]));
+          addNormal(
+            parseFloat(directive[1]),
+            parseFloat(directive[2]),
+            parseFloat(directive[3]));
           break;
         case 'f':
           let match;
           let vertexIndex;
+          let textureIndex;
           let normalIndex;
 
           match = faceFormat.exec(directive[1]);
           vertexIndex = parseInt(match[1]) - 1;
+          textureIndex = null;
           normalIndex = parseInt(match[2]) - 1;
-          indices.push(vertexIndex);
-          normals[vertexIndex * 3] = normalsRaw[normalIndex * 3];
+          addAttributes(vertexIndex, textureIndex, normalIndex);
 
           match = faceFormat.exec(directive[2]);
           vertexIndex = parseInt(match[1]) - 1;
+          textureIndex = null;
           normalIndex = parseInt(match[2]) - 1;
-          indices.push(vertexIndex);
-          normals[vertexIndex * 3 + 1] = normalsRaw[normalIndex * 3 + 1];
+          addAttributes(vertexIndex, textureIndex, normalIndex);
 
           match = faceFormat.exec(directive[3]);
           vertexIndex = parseInt(match[1]) - 1;
+          textureIndex = null;
           normalIndex = parseInt(match[2]) - 1;
-          indices.push(vertexIndex);
-          normals[vertexIndex * 3 + 2] = normalsRaw[normalIndex * 3 + 2];
+          addAttributes(vertexIndex, textureIndex, normalIndex);
       }
     }
-
-    console.log(vertices, normals);
 
     return new Mesh({
       vertices: new Float32Array(vertices),
