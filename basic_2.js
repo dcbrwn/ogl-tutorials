@@ -14,7 +14,7 @@ gl.bufferData(gl.ARRAY_BUFFER, triangleData.buffer, gl.STATIC_DRAW);
 
 loadProgram(gl, 'shaders/passthrough.vsh', 'shaders/simple.fsh')
   .then((program) => {
-    const aPosition = gl.getAttribLocation(program, "a_position");
+    const aPosition = gl.getAttribLocation(program, "aPosition");
 
     setRenderFunc(() => {
       gl.useProgram(program);
