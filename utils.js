@@ -1,6 +1,5 @@
 'use strict';
 
-
 function initGL() {
   const canvas = document.getElementById('canvas');
   const gl = canvas.getContext("webgl");
@@ -15,6 +14,9 @@ function initGL() {
   gl.enable(gl.DEPTH_TEST);
   gl.depthFunc(gl.LEQUAL);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+  // HAAAAX
+  window.gl = gl;
 
   return gl;
 }
@@ -113,4 +115,123 @@ class PerspectiveCamera {
     );
     this._updateCombinedMatrix();
   }
+}
+
+class Mesh {
+  constructor(data) {
+    this.indicesBuffer = gl.createBuffer();
+    this.vertexBuffer = gl.createBuffer();
+    this.normalBuffer = gl.createBuffer();
+    this.facesCount = 0;
+
+    if (data) {
+      this.setData(data);
+    }
+  }
+
+  setData(data) {
+    // TODO: Check length match
+
+    data = data || {};
+
+    if (data.vertices) {
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, data.vertices.buffer, gl.STATIC_DRAW);
+    }
+
+    if (data.normals) {
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, data.normals.buffer, gl.STATIC_DRAW);
+    }
+
+    if (data.indices) {
+      this.facesCount = data.indices.length;
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
+      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data.indices.buffer, gl.STATIC_DRAW);
+    }
+  }
+
+  render(program, camera) {
+    const aPosition = gl.getAttribLocation(program, "aPosition");
+    const aNormal = gl.getAttribLocation(program, "aNormal");
+
+    const transformMatrixUniform = gl.getUniformLocation(program, "transformMatrix");
+
+    gl.useProgram(program);
+    gl.uniformMatrix4fv(transformMatrixUniform, false, camera.transformMatrix);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+    gl.enableVertexAttribArray(aPosition);
+    gl.vertexAttribPointer(aPosition, 3, gl.FLOAT, false, 0, 0);
+
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
+    gl.enableVertexAttribArray(aNormal);
+    gl.vertexAttribPointer(aNormal, 3, gl.FLOAT, false, 0, 0);
+
+    gl.drawElements(gl.TRIANGLES, this.facesCount, gl.UNSIGNED_SHORT, 0);
+
+    gl.disableVertexAttribArray(aNormal);
+    gl.disableVertexAttribArray(aPosition);
+  }
+}
+
+function loadObj(modelUrl) {
+  const faceFormat = /(\d+)\/\/(\d+)/;
+
+  return fetchText(modelUrl).then((text) => {
+    const directives = text.split('\n');
+    const vertices = [];
+    const normalsRaw = [];
+    const normals = [];
+    const indices = [];
+
+    for (let i = 0, len = directives.length; i < len; i += 1) {
+      const directive = directives[i].split(' ');
+
+      switch(directive[0]) {
+        case 'v':
+          vertices.push(parseFloat(directive[1]));
+          vertices.push(parseFloat(directive[2]));
+          vertices.push(parseFloat(directive[3]));
+          break;
+        case 'vn':
+          normalsRaw.push(parseFloat(directive[1]));
+          normalsRaw.push(parseFloat(directive[2]));
+          normalsRaw.push(parseFloat(directive[3]));
+          break;
+        case 'f':
+          let match;
+          let vertexIndex;
+          let normalIndex;
+
+          match = faceFormat.exec(directive[1]);
+          vertexIndex = parseInt(match[1]) - 1;
+          normalIndex = parseInt(match[2]) - 1;
+          indices.push(vertexIndex);
+          normals[vertexIndex * 3] = normalsRaw[normalIndex * 3];
+
+          match = faceFormat.exec(directive[2]);
+          vertexIndex = parseInt(match[1]) - 1;
+          normalIndex = parseInt(match[2]) - 1;
+          indices.push(vertexIndex);
+          normals[vertexIndex * 3 + 1] = normalsRaw[normalIndex * 3 + 1];
+
+          match = faceFormat.exec(directive[3]);
+          vertexIndex = parseInt(match[1]) - 1;
+          normalIndex = parseInt(match[2]) - 1;
+          indices.push(vertexIndex);
+          normals[vertexIndex * 3 + 2] = normalsRaw[normalIndex * 3 + 2];
+      }
+    }
+
+    console.log(vertices, normals);
+
+    return new Mesh({
+      vertices: new Float32Array(vertices),
+      normals: new Float32Array(normals),
+      indices: new Uint16Array(indices),
+    });
+  });
 }
