@@ -86,3 +86,31 @@ function loadProgram(gl, vertexShaderUrl, fragmentShaderUrl) {
       throw error;
     });
 }
+
+class PerspectiveCamera {
+  constructor(fov, aspect, near, far) {
+    this.modelMatrix = mat4.create();
+    this.viewMatrix = mat4.create();
+    this.projectionMatrix = mat4.create();
+    this.transformMatrix = mat4.create();
+
+    mat4.perspective(this.projectionMatrix, fov, aspect, near, far);
+
+    this._updateCombinedMatrix();
+  }
+
+  _updateCombinedMatrix() {
+    mat4.mul(this.transformMatrix, this.viewMatrix, this.modelMatrix);
+    mat4.mul(this.transformMatrix, this.projectionMatrix, this.transformMatrix);
+  }
+
+  lookAt(position, target, orientation) {
+    mat4.lookAt(
+      this.viewMatrix,
+      position,
+      target,
+      orientation
+    );
+    this._updateCombinedMatrix();
+  }
+}
