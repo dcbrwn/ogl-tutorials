@@ -21,6 +21,7 @@ initTextures();
 function initTextures() {
   cubeTexture = gl.createTexture();
   cubeImage = new Image();
+  cubeImage.crossOrigin = 'anonymous';
   cubeImage.onload = function() { handleTextureLoaded(cubeImage, cubeTexture); }
   cubeImage.src = 'textures/envmap1.jpg';
 }
@@ -36,9 +37,9 @@ function handleTextureLoaded(image, texture) {
 
 loadProgram(gl, 'shaders/passthrough.vsh', 'shaders/sdf-metaballs.fsh')
   .then((program) => {
-    const aPosition = gl.getAttribLocation(program, "aPosition");
-    const uTime = gl.getUniformLocation(program, "uTime");
-    const uSampler = gl.getUniformLocation(program, "uSampler");
+    const aPosition = gl.getAttribLocation(program, 'aPosition');
+    const uTime = gl.getUniformLocation(program, 'uTime');
+    const uSampler = gl.getUniformLocation(program, 'uSampler');
 
     let time = 0;
 
