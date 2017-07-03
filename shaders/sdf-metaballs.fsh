@@ -29,8 +29,7 @@ float sphereSDF(vec3 p, float r) {
 }
 
 // polynomial smooth min (k = 0.1);
-float smin( float a, float b, float k )
-{
+float smin(float a, float b, float k) {
   float h = clamp( 0.5+0.5*(b-a)/k, 0.0, 1.0 );
   return mix( b, a, h ) - k*h*(1.0-h);
 }
@@ -66,7 +65,7 @@ float shortestDistanceToSurface(vec3 eye, vec3 marchingDirection, float start, f
   for (int i = 0; i < MAX_MARCHING_STEPS; i++) {
     float dist = sceneSDF(eye + depth * marchingDirection);
     if (dist < EPSILON) {
-    return depth;
+      return depth;
     }
     depth += dist;
     if (depth >= end) {
@@ -117,18 +116,22 @@ void main()
   vec3 eye = rotateY(uTime / 3000.0) * vec3(10.0, 3.0, 3.0);
   mat3 viewToWorld = viewMatrix(eye, vec3(0.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0));
   vec3 worldDir = viewToWorld * viewDir;
-  float dist = shortestDistanceToSurface(eye, worldDir, MIN_DIST, MAX_DIST);
 
-  vec2 uv = projectER(worldDir);
+  float dist = MAX_DIST;
+  vec3 origin = eye;
+  vec3 direction = worldDir;
 
-  if (dist > MAX_DIST - EPSILON) {
-    gl_FragColor = texture2D(uSampler, uv);
-    return;
+  for (int i = 0; i < 8; i++) {
+    dist = shortestDistanceToSurface(origin, direction, MIN_DIST, MAX_DIST);
+
+    if (dist > MAX_DIST - EPSILON) {
+      gl_FragColor = texture2D(uSampler, projectER(direction));
+      return;
+    }
+
+    origin = origin + (dist - EPSILON) * direction;
+    direction = reflect(direction, estimateNormal(origin));
   }
 
-  vec3 p = eye + dist * worldDir;
-  vec3 normal = estimateNormal(p);
-  vec4 tex = texture2D(uSampler, projectER(reflect(worldDir, normal)));
-
-  gl_FragColor = tex; // + (normal.y - 0.2);
+  gl_FragColor = vec4(0.6, 0.5, 0.0, 1.0);
 }
