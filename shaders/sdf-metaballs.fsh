@@ -64,7 +64,7 @@ float shortestDistanceToSurface(vec3 eye, vec3 marchingDirection, float start, f
   float depth = start;
   for (int i = 0; i < MAX_MARCHING_STEPS; i++) {
     float dist = sceneSDF(eye + depth * marchingDirection);
-    if (dist < EPSILON) {
+    if (dist > 0.000001 && dist < EPSILON) {
       return depth;
     }
     depth += dist;
@@ -109,6 +109,44 @@ vec2 projectER(vec3 dir) {
   return uv;
 }
 
+vec4 refractColor(vec3 eye, vec3 dir) {
+  float dist = MAX_DIST;
+  vec3 origin = eye;
+  vec3 direction = dir;
+
+  for (int i = 0; i < 8; i++) {
+    dist = shortestDistanceToSurface(origin, direction, MIN_DIST, MAX_DIST);
+
+    if (dist > MAX_DIST - EPSILON) {
+      return texture2D(uSampler, projectER(direction));
+    }
+
+    origin = origin + (dist + 4.0 * EPSILON) * direction;
+    direction = refract(direction, estimateNormal(origin), 0.9);
+  }
+
+  return vec4(0.0);
+}
+
+vec4 reflectColor(vec3 eye, vec3 dir) {
+  float dist = MAX_DIST;
+  vec3 origin = eye;
+  vec3 direction = dir;
+
+  for (int i = 0; i < 8; i++) {
+    dist = shortestDistanceToSurface(origin, direction, MIN_DIST, MAX_DIST);
+
+    if (dist > MAX_DIST - EPSILON) {
+      return texture2D(uSampler, projectER(direction));
+    }
+
+    origin = origin + (dist - EPSILON) * direction;
+    direction = reflect(direction, estimateNormal(origin));
+  }
+
+  return vec4(0.0);
+}
+
 void main()
 {
   vec2 iResolution = vec2(800.0, 600.0);
@@ -116,22 +154,5 @@ void main()
   vec3 eye = rotateY(uTime / 3000.0) * vec3(10.0, 3.0, 3.0);
   mat3 viewToWorld = viewMatrix(eye, vec3(0.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0));
   vec3 worldDir = viewToWorld * viewDir;
-
-  float dist = MAX_DIST;
-  vec3 origin = eye;
-  vec3 direction = worldDir;
-
-  for (int i = 0; i < 8; i++) {
-    dist = shortestDistanceToSurface(origin, direction, MIN_DIST, MAX_DIST);
-
-    if (dist > MAX_DIST - EPSILON) {
-      gl_FragColor = texture2D(uSampler, projectER(direction));
-      return;
-    }
-
-    origin = origin + (dist - EPSILON) * direction;
-    direction = reflect(direction, estimateNormal(origin));
-  }
-
-  gl_FragColor = vec4(0.6, 0.5, 0.0, 1.0);
+  gl_FragColor = (refractColor(eye, worldDir) + reflectColor(eye, worldDir)) / 2.0;
 }
