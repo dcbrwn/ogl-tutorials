@@ -39,9 +39,6 @@ float smin( float a, float b, float k )
  * Signed distance function describing the scene.
  */
 float sceneSDF(vec3 samplePoint) {
-  // Slowly spin the whole scene
-  samplePoint = rotateY(uTime / 2000.0) * samplePoint;
-
   float ballRadius = 1.0;
   float t = uTime / 3000.0 + 10500.0;
   float balls = MAX_DIST;
@@ -117,12 +114,12 @@ void main()
 {
   vec2 iResolution = vec2(800.0, 600.0);
   vec3 viewDir = rayDirection(90.0, iResolution.xy, gl_FragCoord.xy);
-  vec3 eye = vec3(10.0, 3.0, 3.0);
+  vec3 eye = rotateY(uTime / 3000.0) * vec3(10.0, 3.0, 3.0);
   mat3 viewToWorld = viewMatrix(eye, vec3(0.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0));
   vec3 worldDir = viewToWorld * viewDir;
   float dist = shortestDistanceToSurface(eye, worldDir, MIN_DIST, MAX_DIST);
 
-  vec2 uv = projectER(viewDir);
+  vec2 uv = projectER(worldDir);
 
   if (dist > MAX_DIST - EPSILON) {
     gl_FragColor = texture2D(uSampler, uv);
@@ -131,7 +128,7 @@ void main()
 
   vec3 p = eye + dist * worldDir;
   vec3 normal = estimateNormal(p);
-  vec4 tex = texture2D(uSampler, projectER(normal));
+  vec4 tex = texture2D(uSampler, projectER(reflect(worldDir, normal)));
 
   gl_FragColor = tex; // + (normal.y - 0.2);
 }
