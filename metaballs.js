@@ -40,6 +40,17 @@ loadProgram(gl, 'shaders/passthrough.vsh', 'shaders/sdf-metaballs.fsh')
     const aPosition = gl.getAttribLocation(program, 'aPosition');
     const uTime = gl.getUniformLocation(program, 'uTime');
     const uSampler = gl.getUniformLocation(program, 'uSampler');
+    const uResolution = gl.getUniformLocation(program, 'uResolution');
+
+    let sx, sy;
+
+    function updateViewport() {
+      sx = window.innerWidth;
+      sy = window.innerHeight;
+    };
+
+    window.onresize = updateViewport;
+    updateViewport();
 
     let time = 0;
 
@@ -51,6 +62,7 @@ loadProgram(gl, 'shaders/passthrough.vsh', 'shaders/sdf-metaballs.fsh')
       gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
       gl.uniform1f(uTime, time);
       gl.uniform1i(uSampler, cubeTexture);
+      gl.uniform2fv(uResolution, [sx, sy]);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       gl.disableVertexAttribArray(aPosition);
     });

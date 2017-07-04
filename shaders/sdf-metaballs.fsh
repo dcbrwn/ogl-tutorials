@@ -7,6 +7,7 @@ const float EPSILON = 0.001;
 
 uniform sampler2D uSampler;
 uniform float uTime;
+uniform vec2 uResolution;
 
 /**
  * Rotation matrix around the Y axis.
@@ -39,7 +40,7 @@ float smin(float a, float b, float k) {
  */
 float sceneSDF(vec3 samplePoint) {
   float ballRadius = 1.0;
-  float t = uTime / 3000.0 + 10500.0;
+  float t = uTime / 10000.0 + 10500.0;
   float balls = MAX_DIST;
   for (float i = 1.0; i < 4.0; i += 1.3) {
     for (float j = 1.0; j < 4.0; j += 1.3) {
@@ -133,7 +134,7 @@ vec4 reflectColor(vec3 eye, vec3 dir) {
   vec3 origin = eye;
   vec3 direction = dir;
 
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < 6; i++) {
     dist = shortestDistanceToSurface(origin, direction, MIN_DIST, MAX_DIST);
 
     if (dist > MAX_DIST - EPSILON) {
@@ -149,10 +150,9 @@ vec4 reflectColor(vec3 eye, vec3 dir) {
 
 void main()
 {
-  vec2 iResolution = vec2(800.0, 600.0);
-  vec3 viewDir = rayDirection(90.0, iResolution.xy, gl_FragCoord.xy);
-  vec3 eye = rotateY(uTime / 3000.0) * vec3(10.0, 3.0, 3.0);
+  vec3 viewDir = rayDirection(90.0, uResolution.xy, gl_FragCoord.xy);
+  vec3 eye = rotateY(uTime / 10000.0) * vec3(10.0, 3.0, 3.0);
   mat3 viewToWorld = viewMatrix(eye, vec3(0.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0));
   vec3 worldDir = viewToWorld * viewDir;
-  gl_FragColor = (refractColor(eye, worldDir) + reflectColor(eye, worldDir)) / 2.0;
+  gl_FragColor = reflectColor(eye, worldDir);
 }

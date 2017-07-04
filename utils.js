@@ -2,13 +2,20 @@
 
 function initGL() {
   const canvas = document.getElementById('canvas');
-  const gl = canvas.getContext("webgl");
+  const gl = canvas.getContext('webgl');
 
   if (!gl) {
     throw 'WebGL is not supported';
   }
 
-  gl.viewport(0, 0, canvas.width, canvas.height);
+  function updateViewport() {
+    gl.canvas.width = window.innerWidth;
+    gl.canvas.height = window.innerHeight;
+    gl.viewport(0, 0, window.innerWidth, window.innerHeight);
+  };
+
+  window.onresize = updateViewport;
+  updateViewport();
 
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
   gl.enable(gl.DEPTH_TEST);
@@ -154,10 +161,10 @@ class Mesh {
   }
 
   render(program, camera) {
-    const aPosition = gl.getAttribLocation(program, "aPosition");
-    const aNormal = gl.getAttribLocation(program, "aNormal");
+    const aPosition = gl.getAttribLocation(program, 'aPosition');
+    const aNormal = gl.getAttribLocation(program, 'aNormal');
 
-    const transformMatrixUniform = gl.getUniformLocation(program, "transformMatrix");
+    const transformMatrixUniform = gl.getUniformLocation(program, 'transformMatrix');
 
     gl.useProgram(program);
     gl.uniformMatrix4fv(transformMatrixUniform, false, camera.transformMatrix);
