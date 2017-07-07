@@ -8,15 +8,6 @@ function initGL() {
     throw 'WebGL is not supported';
   }
 
-  function updateViewport() {
-    gl.canvas.width = window.innerWidth;
-    gl.canvas.height = window.innerHeight;
-    gl.viewport(0, 0, window.innerWidth, window.innerHeight);
-  };
-
-  window.onresize = updateViewport;
-  updateViewport();
-
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
   gl.enable(gl.DEPTH_TEST);
   gl.depthFunc(gl.LEQUAL);
