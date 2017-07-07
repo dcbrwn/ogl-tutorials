@@ -114,12 +114,7 @@ class PerspectiveCamera {
   }
 
   lookAt(position, target, orientation) {
-    mat4.lookAt(
-      this.viewMatrix,
-      position,
-      target,
-      orientation
-    );
+    mat4.lookAt(this.viewMatrix, position, target, orientation);
     this._updateCombinedMatrix();
   }
 }
