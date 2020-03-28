@@ -94,7 +94,7 @@
       );
 
       async function start() {
-        const shadowMapRez = 4096;
+        const shadowMapRez = 512;
         const depthFramebuffer = new DepthFramebuffer(gl, shadowMapRez, shadowMapRez);
 
         const lightProgram = await loadProgram(
