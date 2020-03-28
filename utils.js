@@ -208,14 +208,19 @@ class Mesh {
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
-    gl.enableVertexAttribArray(aNormal);
-    gl.vertexAttribPointer(aNormal, 3, gl.FLOAT, false, 0, 0);
+    if (aNormal !== -1) {
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
+      gl.enableVertexAttribArray(aNormal);
+      gl.vertexAttribPointer(aNormal, 3, gl.FLOAT, false, 0, 0);
+    }
 
     // gl.drawElements(gl.TRIANGLES, this.facesCount, gl.UNSIGNED_SHORT, 0);
     gl.drawArrays(gl.TRIANGLES, 0, this.facesCount);
 
-    gl.disableVertexAttribArray(aNormal);
+    if (aNormal !== -1) {
+      gl.disableVertexAttribArray(aNormal);
+    }
+
     gl.disableVertexAttribArray(aPosition);
   }
 }

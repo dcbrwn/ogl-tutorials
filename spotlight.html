@@ -142,9 +142,10 @@
           gl.uniformMatrix4fv(lightTransformation, false, lightCamera.transformMatrix);
 
           gl.drawArrays(gl.TRIANGLES, 0, 6);
-          mesh.render(lightProgram, lightCamera);
 
           gl.disableVertexAttribArray(laPosition);
+
+          mesh.render(lightProgram, lightCamera);
 
           // Render scene
           gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
@@ -164,11 +165,10 @@
           gl.uniform1i(uShadowMap, depthFramebuffer.targetTexture);
 
           gl.drawArrays(gl.TRIANGLES, 0, 6);
-          mesh.render(cameraProgram, camera);
-
-          // Teardown
           gl.disableVertexAttribArray(aPosition);
           gl.disableVertexAttribArray(aNormal);
+
+          mesh.render(cameraProgram, camera);
         });
       }
 
