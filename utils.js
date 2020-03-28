@@ -1,17 +1,54 @@
 'use strict';
 
-function initGL() {
+const requiredExtensions = [
+  // 'OES_texture_float',
+  // 'WEBGL_depth_texture',
+];
+
+const animationStoppers = new Set();
+
+function initGLCanvas() {
+  console.log('Initializing GL context...')
   const canvas = document.getElementById('canvas');
-  const gl = canvas.getContext('webgl');
+  const gl = canvas.getContext('webgl2');
 
   if (!gl) {
     throw 'WebGL is not supported';
+  }
+
+  for (const extensionId of requiredExtensions) {
+    const extension = gl.getExtension(extensionId);
+
+    if (!extension) {
+      throw `GL context doesn\'t support ${extensionId}`;
+    }
+
+    console.log(`${extensionId} supported`);
   }
 
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
   gl.enable(gl.DEPTH_TEST);
   gl.depthFunc(gl.LEQUAL);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+  console.log("GL ready");
+
+  window.onbeforeunload = () => {
+    console.log("Releasing GL context...");
+
+    for (const animationStopper of animationStoppers) {
+      animationStopper();
+    }
+
+    const ext = gl.getExtension("WEBGL_lose_context");
+    ext.loseContext();
+  }
+
+  return { gl, canvas };
+}
+
+function initGL() {
+  const { gl } = initGLCanvas();
 
   // HAAAAX
   window.gl = gl;
@@ -21,6 +58,7 @@ function initGL() {
 
 function setRenderFunc(func) {
   let prevTime = Date.now();
+  let handlerId;
 
   function render() {
     let currentTime = Date.now();
@@ -28,10 +66,19 @@ function setRenderFunc(func) {
     prevTime = currentTime;
 
     func(deltaTime);
-    requestAnimationFrame(render);
+    handlerId = requestAnimationFrame(render);
   }
 
   render();
+
+  function animationStopper() {
+    animationStoppers.delete(animationStopper);
+    cancelAnimationFrame(handlerId);
+  }
+
+  animationStoppers.add(animationStopper);
+
+  return animationStopper;
 }
 
 function fetchText(url) {
@@ -66,7 +113,7 @@ function loadProgram(gl, vertexShaderUrl, fragmentShaderUrl) {
       gl.compileShader(fragmentShader);
 
       if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
-        throw 'Could not compile vertex shader:\n' + gl.getShaderInfoLog(fragmentShader);
+        throw 'Could not compile fragment shader:\n' + gl.getShaderInfoLog(fragmentShader);
       }
 
       gl.attachShader(program, vertexShader);
