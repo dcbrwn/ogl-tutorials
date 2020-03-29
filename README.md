@@ -1,4 +1,4 @@
-[Tutorial](http://www.opengl-tutorial.org/) bits and sketches.
+[Tutorial](http://www.opengl-tutorial.org/) bits and sketches. All samples use WebGL2.
 
 # How to run
 
