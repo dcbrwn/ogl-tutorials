@@ -21,7 +21,7 @@ float calcShadow(vec4 fragPosLightSpace) {
   float currentDepth = projCoords.z;
   float bias = 0.005;
   float shadow = 0.0;
-  vec2 texelSize = 3.0 / vec2(textureSize(uShadowMap, 0));
+  vec2 texelSize = 1.0 / vec2(textureSize(uShadowMap, 0));
   float count = 0.0;
 
   for (float t = 0.0; t <= 1.0; t += 0.1) {

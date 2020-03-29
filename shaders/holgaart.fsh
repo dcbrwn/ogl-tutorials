@@ -67,4 +67,6 @@ void main() {
     vec4 inverted = vec4(modifyHSV(src2.rgb, vec3(0.5, 0.0, 0.0)), 0.0);
 
     gl_FragColor.rgb = blendOverlay(src1.rgb, inverted.rgb);
+    // gl_FragColor.rg = gl_FragCoord.xy / uResolution.xy;
+    // gl_FragColor.ba = vec2(1.0);
 }

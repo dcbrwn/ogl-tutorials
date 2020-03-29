@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebGL Samples: canvas</title>
+  <link rel="stylesheet" type="text/css" href="./reset.css">
+  <link rel="stylesheet" type="text/css" href="./style.css">
+  <script src="/vendor/gl-matrix-min.js"></script>
+</head>
+<body>
+  <canvas id="canvas" width="800px" height="600px"></canvas>
+
+  <script type="module">
+    const scriptElement = document.createElement("script");
+    scriptElement.type = "module";
+    scriptElement.src = location.search.slice(1);
+    document.body.appendChild(scriptElement);
+  </script>
+</body>
+</html>
