@@ -1,4 +1,5 @@
-import { initGL, loadProgram, loadObj, setRenderFunc, PerspectiveCamera } from "../lib/utils.js";
+import { initGL, loadProgram, loadObj, setRenderFunc } from "../lib/utils.js";
+import { PerspectiveCamera } from "../lib/PerspectiveCamera.js";
 import * as vec3 from "../vendor/gl-matrix/vec3.js";
 
 const gl = initGL();
@@ -13,7 +14,7 @@ camera.lookAt(
 Promise
   .all([
     loadProgram(gl, 'shaders/phong.vsh', 'shaders/phong.fsh'),
-    loadObj('assets/teapot.obj'),
+    loadObj(gl, 'assets/teapot.obj'),
   ])
   .then(([program, mesh]) => {
     setRenderFunc((dt) => {

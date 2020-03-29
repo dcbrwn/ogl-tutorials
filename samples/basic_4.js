@@ -1,4 +1,5 @@
-import { initGL, loadProgram, setRenderFunc, PerspectiveCamera } from "../lib/utils.js";
+import { initGL, loadProgram, setRenderFunc } from "../lib/utils.js";
+import { PerspectiveCamera } from "../lib/PerspectiveCamera.js";
 import * as vec3 from "../vendor/gl-matrix/vec3.js";
 
 const gl = initGL();

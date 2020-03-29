@@ -4,6 +4,8 @@
     "alwaysStrict": true,
     "esModuleInterop": true,
     "downlevelIteration": true,
+    "moduleResolution": "classic",
+    "module": "esnext",
     "lib": [
       "dom",
       "dom.iterable",

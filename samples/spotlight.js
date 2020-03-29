@@ -1,4 +1,5 @@
-import { initGL, loadProgram, loadObj, setRenderFunc, PerspectiveCamera } from "../lib/utils.js";
+import { initGL, loadProgram, loadObj, setRenderFunc } from "../lib/utils.js";
+import { PerspectiveCamera } from "../lib/PerspectiveCamera.js";
 import { calcFlatNormalsForVertices, toRad } from "../lib/math.js";
 import { DepthFramebuffer } from "../lib/Framebuffer.js";
 import * as vec3 from "../vendor/gl-matrix/vec3.js";
@@ -59,7 +60,7 @@ async function start() {
     'shaders/spotlight_camera.fsh'
   );
 
-  const mesh = await loadObj('assets/teapot.obj');
+  const mesh = await loadObj(gl, 'assets/teapot.obj');
 
   const aPosition = gl.getAttribLocation(cameraProgram, "aPosition");
   const aNormal = gl.getAttribLocation(cameraProgram, "aNormal");

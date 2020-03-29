@@ -1,4 +1,4 @@
-import { initGL, loadProgram, setRenderFunc, PerspectiveCamera } from "../lib/utils.js";
+import { initGL, loadProgram, setRenderFunc } from "../lib/utils.js";
 
 const gl = initGL();
 
