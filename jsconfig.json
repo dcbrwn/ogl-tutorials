@@ -1,10 +1,18 @@
 {
   "compilerOptions": {
     "checkJs": true,
-    "alwaysStrict": true
+    "alwaysStrict": true,
+    "esModuleInterop": true,
+    "downlevelIteration": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ]
   },
   "include": [
     "./lib/**/*.js",
-    "./samples/**/*.js"
+    "./samples/**/*.js",
+    "./vendor/**/*.js"
   ]
 }

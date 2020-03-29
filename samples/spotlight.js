@@ -1,6 +1,8 @@
 import { initGL, loadProgram, loadObj, setRenderFunc, PerspectiveCamera } from "../lib/utils.js";
 import { calcFlatNormalsForVertices, toRad } from "../lib/math.js";
 import { DepthFramebuffer } from "../lib/Framebuffer.js";
+import * as vec3 from "../vendor/gl-matrix/vec3";
+
 
 const gl = initGL();
 
@@ -110,7 +112,7 @@ async function start() {
     gl.useProgram(cameraProgram);
     gl.uniformMatrix4fv(transformMatrixUniform, false, camera.transformMatrix);
     gl.uniformMatrix4fv(uLightMatrix, false, lightCamera.transformMatrix);
-    gl.uniform1i(uShadowMap, depthFramebuffer.targetTexture);
+    gl.uniform1i(uShadowMap, /** @type {number} */ (depthFramebuffer.targetTexture));
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
     gl.disableVertexAttribArray(aPosition);
