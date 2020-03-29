@@ -1,7 +1,7 @@
 import { initGL, loadProgram, loadObj, setRenderFunc, PerspectiveCamera } from "../lib/utils.js";
 import { calcFlatNormalsForVertices, toRad } from "../lib/math.js";
 import { DepthFramebuffer } from "../lib/Framebuffer.js";
-import * as vec3 from "../vendor/gl-matrix/vec3";
+import * as vec3 from "../vendor/gl-matrix/vec3.js";
 
 
 const gl = initGL();

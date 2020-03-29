@@ -1,6 +1,6 @@
 import { initGL, loadProgram, setRenderFunc } from "../lib/utils.js";
-import * as mat4 from "../vendor/gl-matrix/mat4";
-import * as vec3 from "../vendor/gl-matrix/vec3";
+import * as mat4 from "../vendor/gl-matrix/mat4.js";
+import * as vec3 from "../vendor/gl-matrix/vec3.js";
 
 const gl = initGL();
 
