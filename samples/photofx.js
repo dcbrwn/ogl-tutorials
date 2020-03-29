@@ -36,7 +36,7 @@ async function main() {
   gl.bufferData(gl.ARRAY_BUFFER, triangleData.buffer, gl.STATIC_DRAW);
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
-  const program = await loadProgram(gl, 'shaders/passthrough.vsh', 'shaders/holgaart.fsh');
+  const program = await loadProgram(gl, 'shaders/passthrough.vertex.glsl', 'shaders/holgaart.fragment.glsl');
 
   const imageTextureId = await loadImage(gl, "/assets/Lenna.png");
 

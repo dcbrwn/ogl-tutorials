@@ -50,14 +50,14 @@ async function start() {
 
   const lightProgram = await loadProgram(
     gl,
-    'shaders/spotlight_light.vsh',
-    'shaders/spotlight_light.fsh'
+    'shaders/spotlight_light.vertex.glsl',
+    'shaders/spotlight_light.fragment.glsl'
   );
 
   const cameraProgram = await loadProgram(
     gl,
-    'shaders/spotlight_camera.vsh',
-    'shaders/spotlight_camera.fsh'
+    'shaders/spotlight_camera.vertex.glsl',
+    'shaders/spotlight_camera.fragment.glsl'
   );
 
   const mesh = await loadObj(gl, 'assets/teapot.obj');

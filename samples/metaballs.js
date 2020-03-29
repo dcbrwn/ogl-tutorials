@@ -35,7 +35,7 @@ function handleTextureLoaded(image, texture) {
   // gl.bindTexture(gl.TEXTURE_2D, null);
 }
 
-loadProgram(gl, 'shaders/passthrough.vsh', 'shaders/sdf-metaballs.fsh')
+loadProgram(gl, 'shaders/passthrough.vertex.glsl', 'shaders/sdf-metaballs.fragment.glsl')
   .then((program) => {
     const aPosition = gl.getAttribLocation(program, 'aPosition');
     const uTime = gl.getUniformLocation(program, 'uTime');

@@ -97,7 +97,7 @@ camera.lookAt(
   vec3.fromValues(0, 1, 0)
 );
 
-loadProgram(gl, 'shaders/color.vsh', 'shaders/color.fsh')
+loadProgram(gl, 'shaders/color.vertex.glsl', 'shaders/color.fragment.glsl')
   .then((program) => {
     const aPosition = gl.getAttribLocation(program, "aPosition");
     const aColor = gl.getAttribLocation(program, "aColor");

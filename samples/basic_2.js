@@ -12,7 +12,7 @@ const buffer = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 gl.bufferData(gl.ARRAY_BUFFER, triangleData.buffer, gl.STATIC_DRAW);
 
-loadProgram(gl, 'shaders/passthrough.vsh', 'shaders/simple.fsh')
+loadProgram(gl, 'shaders/passthrough.vertex.glsl', 'shaders/simple.fragment.glsl')
   .then((program) => {
     const aPosition = gl.getAttribLocation(program, "aPosition");
 

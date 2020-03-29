@@ -13,7 +13,7 @@ camera.lookAt(
 
 Promise
   .all([
-    loadProgram(gl, 'shaders/phong.vsh', 'shaders/phong.fsh'),
+    loadProgram(gl, 'shaders/phong.vertex.glsl', 'shaders/phong.fragment.glsl'),
     loadObj(gl, 'assets/teapot.obj'),
   ])
   .then(([program, mesh]) => {
