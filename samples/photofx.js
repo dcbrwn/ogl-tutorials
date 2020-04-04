@@ -1,11 +1,5 @@
 import { initGL, loadProgram, setRenderFunc } from "../lib/utils.js";
-
-const triangleData = new Float32Array([
-  -1.0, -1.0, 0.0,
-  1.0, -1.0, 0.0,
-  -1.0, 1.0, 0.0,
-  1.0, 1.0, 0.0,
-]);
+import { TheQuad } from "../lib/TheQuad.js";
 
 function loadImage(gl, imageUrl) {
   return new Promise((resolve) => {
@@ -29,11 +23,8 @@ function loadImage(gl, imageUrl) {
 
 async function main() {
   const gl = initGL();
+  const quad = new TheQuad(gl);
 
-  const buffer = gl.createBuffer();
-
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-  gl.bufferData(gl.ARRAY_BUFFER, triangleData.buffer, gl.STATIC_DRAW);
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
   const program = await loadProgram(gl, 'shaders/passthrough.vertex.glsl', 'shaders/holgaart.fragment.glsl');
@@ -51,15 +42,16 @@ async function main() {
     time += deltaTime;
 
     gl.useProgram(program);
-    gl.enableVertexAttribArray(aPosition);
-    gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
-    gl.uniform1f(uTime, time);
 
+    gl.uniform1f(uTime, time);
     gl.bindTexture(gl.TEXTURE_2D, imageTextureId);
     gl.uniform1i(uSampler, imageTextureId);
-
     gl.uniform2fv(uResolution, [800, 600]);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+    gl.enableVertexAttribArray(aPosition);
+
+    quad.render();
+
     gl.disableVertexAttribArray(aPosition);
   });
 }
