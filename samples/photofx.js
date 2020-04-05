@@ -48,11 +48,7 @@ async function main() {
     gl.uniform1i(uSampler, imageTextureId);
     gl.uniform2fv(uResolution, [800, 600]);
 
-    gl.enableVertexAttribArray(aPosition);
-
-    quad.render();
-
-    gl.disableVertexAttribArray(aPosition);
+    quad.render(program);
   });
 }
 
