@@ -6,11 +6,11 @@ body {
 }
 
 a {
-  color: hsl(56, 100%, 75%);
+  color: hsl(140, 100%, 75%);
 }
 
 a:visited {
-  color: hsl(56, 50%, 50%);
+  color: hsl(140, 50%, 50%);
 }
 
 .menu-wrapper {
