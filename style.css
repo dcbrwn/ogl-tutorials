@@ -29,7 +29,7 @@ a:visited {
 }
 
 .menu-trigger:hover {
-  background-color: hsl(56, 75%, 50%);
+  background-color: hsl(140, 75%, 50%);
 }
 
 .menu {
@@ -63,7 +63,7 @@ a:visited {
 }
 
 .menu a:hover {
-  background-color: hsl(56, 75%, 50%);
+  background-color: hsl(140, 75%, 50%);
   text-decoration: underline;
 }
 
