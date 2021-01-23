@@ -51,7 +51,9 @@ loadProgram(gl, 'shaders/passthrough.vertex.glsl', 'shaders/sdf-metaballs.fragme
       gl.enableVertexAttribArray(aPosition);
       gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
       gl.uniform1f(uTime, time);
-      gl.uniform1i(uSampler, cubeTexture);
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, cubeTexture);
+      gl.uniform1i(uSampler, 0);
       gl.uniform2fv(uResolution, [800, 600]);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       gl.disableVertexAttribArray(aPosition);

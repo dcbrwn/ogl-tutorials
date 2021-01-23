@@ -44,8 +44,11 @@ async function main() {
     gl.useProgram(program);
 
     gl.uniform1f(uTime, time);
+
+    gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, imageTextureId);
-    gl.uniform1i(uSampler, imageTextureId);
+    gl.uniform1i(uSampler, 0);
+
     gl.uniform2fv(uResolution, [800, 600]);
 
     quad.render(program);

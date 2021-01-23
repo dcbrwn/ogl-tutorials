@@ -229,7 +229,10 @@ async function main() {
 
       gl.uniformMatrix4fv(sceneMaterial.uniforms.transformMatrixUniform, false, camera.transformMatrix);
       gl.uniformMatrix4fv(sceneMaterial.uniforms.uLightMatrix, false, lightCamera.transformMatrix);
-      gl.uniform1i(sceneMaterial.uniforms.uShadowMap, /** @type {number} */(depthFramebuffer.targetTexture));
+
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, depthFramebuffer.targetTexture);
+      gl.uniform1i(sceneMaterial.uniforms.uShadowMap, 0);
 
       gl.drawArrays(gl.TRIANGLES, 0, 6);
       gl.disableVertexAttribArray(sceneMaterial.attr.aPosition);
