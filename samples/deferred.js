@@ -88,7 +88,7 @@ async function main() {
         gl_FragDepth = gl_FragCoord.z;
         oPos = vec4(vPos, 1.0);
         oNormal = vec4(vNormal, 1.0);
-        oColor = vec4(1.0, 0.0, 0.0, 1.0);
+        oColor = vec4(0.6, 0.63, 0.65, 1.0);
       }
     `,
   });
@@ -149,7 +149,16 @@ async function main() {
 
       void main() {
         vec2 uv = gl_FragCoord.xy / uResolution.xy;
-        fragColor = vec4(light(uv), 1.0);
+        uv *= 2.0;
+
+        if (uv.x < 1.0 && uv.y < 1.0)
+          fragColor = texture(uPos, uv);
+        else if (uv.x >= 1.0 && uv.y < 1.0)
+          fragColor = vec4(light(uv - vec2(1.0, 0.0)), 1.0);
+        else if (uv.x < 1.0 && uv.y >= 1.0)
+          fragColor = texture(uColor, uv - vec2(0.0, 1.0));
+        else
+          fragColor = texture(uNormal, uv - vec2(1.0, 1.0));
       }
     `,
   });
